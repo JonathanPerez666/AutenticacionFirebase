@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UsuarioModel } from '../../models/usuario.model';
 import { AuthService } from '../../services/auth.service';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import 'sweetalert2/src/sweetalert2.scss'
 
 @Component({
   selector: 'app-login',
@@ -28,17 +29,18 @@ export class LoginComponent implements OnInit {
   login(form: NgForm){
     if (form.invalid) { return; }
     
-    swal({
+    swal.fire({
       buttons:{value: false},
       icon: 'info',
       text: 'Espere por favor...',
       closeOnClickOutside: false,
     });
+    Swal.showLoading();
 
     this.auth.login(this.usuario)
     .subscribe(resp => {
       console.log(resp);
-      swal.close();
+      Swal.close();
       if (this.recordarme) {
         localStorage.setItem('email', this.usuario.email);
       }
@@ -46,7 +48,7 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('/home');
     }, (err) => {
       console.log(err.error.error.message);
-      swal({
+      Swal.fire({
         icon: 'error',
         title: 'Error al autenticar',
         text: err.error.error.message
